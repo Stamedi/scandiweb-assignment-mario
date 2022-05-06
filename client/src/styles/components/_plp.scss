@@ -1,0 +1,24 @@
+.plp {
+  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+}
+
+.plp__title {
+  font-weight: 400;
+  font-size: 42px;
+  color: $black;
+}
+
+.plp__products {
+  padding-top: 100px;
+  display: grid;
+  grid-template-columns: 386px 386px 386px;
+  grid-template-rows: auto;
+  column-gap: 44px;
+  row-gap: 40px;
+}
+
+.background-grey {
+  background-color: grey;
+}

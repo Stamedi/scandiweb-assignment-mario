@@ -1,0 +1,15 @@
+.app__container {
+  max-width: 65%;
+  margin: 0 auto;
+  padding-bottom: 150px;
+}
+
+.app__background {
+  z-index: 777;
+  padding-top: 50px;
+  background-color: rgba(57, 55, 72, 0.22);
+  background-size: cover;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+}

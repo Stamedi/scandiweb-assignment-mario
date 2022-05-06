@@ -1,0 +1,134 @@
+.product-cart__wrapper {
+  border-bottom: 1px solid $grey-cart-page;
+  max-width: 1097px;
+}
+
+.product-cart__container {
+  max-width: 1097px;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid $grey-cart-page;
+  padding: 24px 0px;
+}
+
+.product-cart__l-side {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.product-cart__l-side__title {
+  padding-bottom: 19px;
+}
+
+.product-cart__l-side__title > h2 {
+  font-size: 30px;
+  font-weight: 600;
+  padding-bottom: 10px;
+}
+
+.product-cart__l-side__title > h3 {
+  font-size: 30px;
+  font-weight: 400;
+}
+
+.product-cart__l-side__price {
+  font-size: 24px;
+  font-weight: 700;
+  padding-bottom: 15px;
+}
+
+.product-cart__l-side__size {
+  display: flex;
+}
+
+.product-cart__l-side__size > p {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 18px;
+  border: 1px solid $black;
+  padding: 10px 24px;
+  margin-right: 12px;
+  margin-top: 8px;
+}
+
+.attribute-color__cart-page {
+  height: 36px;
+  width: 36px;
+}
+
+.product-cart__l-side__size > p:hover {
+  background-color: $black;
+  color: white;
+  cursor: pointer;
+}
+
+.product-cart__r-side {
+  display: flex;
+
+}
+
+.product-cart__r-side__incr-decr {
+  display: flex;
+  flex-direction: column;
+  padding-right: 12px;
+  align-items:center;
+  justify-content: space-between;
+}
+
+.product-img-container {
+  display: flex;
+  align-items: center;
+}
+
+.product-cart__r-side__incr-decr > p {
+  padding: 30px 0;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.product-cart__r-side__incr-decr > button {
+  border: none;
+  background: none;
+  background-color: white;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.product-img {
+  position: relative;
+}
+
+.product-img > img {
+  height: auto;
+  width: 200px;
+}
+
+.attribute-color__cart-page {
+  border: 1px solid black;
+  margin-top: 10px;
+}
+
+.image_arrows{
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+}
+
+.vector-left{
+  padding-right: 8px;
+}
+
+// .vector-left,
+// .vector-right {
+//   position: absolute;
+// }
+
+// .vector-left {
+//   top: 50%;
+//   left: 0;
+// }
+
+// .vector-right {
+//   right: 0;
+//   top: 50%;
+// }
