@@ -85,7 +85,8 @@ export default class App extends Component {
         ],
       }));
       localStorage.setItem('products', JSON.stringify(this.state.productsLocalStorage));
-    } else if (JSON.parse(localStorage.getItem('products')) !== null) {
+    } 
+    else if (JSON.parse(localStorage.getItem('products')) !== null) {
       const items = JSON.parse(localStorage.getItem('products'));
       const amount = this.state.amount;
       const attrList = items.map((item) => item.attributeList.map((attribute) => attribute.e));

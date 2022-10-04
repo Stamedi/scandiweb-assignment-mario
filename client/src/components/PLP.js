@@ -11,7 +11,16 @@ export default class BodyPLP extends Component {
     this.state = {
       products: [],
       categ: '',
+      attributes: [],
+      showAttributes: false,
     };
+  }
+
+  returnFilters = async () => {
+    await this.state.products.map((product) => product.attributes.map((attribute) => {
+      console.log(attribute)
+    }))
+    
   }
 
   async componentDidMount() {
@@ -21,7 +30,10 @@ export default class BodyPLP extends Component {
       this.setState({
         products,
         categ,
+        attributes: products.map((product) => product.attributes)
       });
+      this.returnFilters()
+      // console.log(products.map((product) => product.attributes.map((attribute) => attribute.id)))
     }
 
     if (this.props.match.params.category) {
@@ -30,7 +42,9 @@ export default class BodyPLP extends Component {
       this.setState({
         products,
         categ,
+        attributes: products.map((product) => product.attributes)
       });
+      this.returnFilters()
     }
  
   }
@@ -44,16 +58,54 @@ export default class BodyPLP extends Component {
         this.setState({
           products,
           categ,
+          attributes: products.map((product) => product.attributes)
         });
       }
 
+      this.returnFilters()
     }
   }
 
   render() {
-    const { categ } = this.state;
+    const { categ, products } = this.state;
     return (
       <div className="plp">
+        <div className="sidebar-container">
+          Filters
+          {products.map((product) => product.attributes.map((attribute, index) => (
+            <div key={index} className="filter-container">
+              <p>{attribute.id}</p>
+              <div className="attribute-values">
+                {attribute.items && attribute.items.map((item) =>
+                  item.value.includes('#') ? (
+                    <label key={item.id}>
+                      <input
+                        name={attribute.id}
+                        value={item.value}
+                        type="radio"
+                        onClick={(e) => this.selectedAttribute(e.target.value, index, attribute.id )}
+                      />
+                      <div className="attribute-color" style={{ background: item.value }}></div>
+                    </label>
+                  ) : (
+                    <label key={item.id} className="default__attributes">
+                      <input
+                        name={attribute.id}
+                        value={item.value}
+                        type="radio"
+                
+                        onClick={(e) => this.selectedAttribute(e.target.value, index, attribute.id)}
+                      />
+                      <div className="attribute">{item.value}</div>
+                    </label>
+                  )
+                )}
+            </div>
+          </div>
+          )))}
+
+          <button onClick={() => console.log(products.map((product) => product.attributes))}>Click Me</button>
+        </div>
         <h1 className="plp__title">{categ.charAt(0).toUpperCase() + categ.slice(1)}</h1>
         <div className="plp__products">
           <Product products={this.state.products} />
