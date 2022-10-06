@@ -27,5 +27,10 @@
   position: absolute;
   left: 2%;
   top: 30%;
+  display: flex;
+  flex-direction: column;
 }
 
+.attribute-color-container {
+  display: flex;
+}

@@ -18,15 +18,6 @@ export default class BodyPLP extends Component {
   }
 
   returnFilters = async () => {
-    // await this.state.products.map((product) => product.attributes.map((attribute) => {
-    //   const arr = [...this.state.attributes, attribute]
-    //   const filterArr = arr.map((singleVal) => JSON.stringify(singleVal))
-    //   this.setState({
-    //     atrributes: [...this.state.attributes, filterArr]
-    // })
-    // }))
-
-
     const stringifyArr = this.state.attributes.map((attribute) => JSON.stringify(attribute))
     const filterArr = [...new Set(stringifyArr)]
     if (this.state.categ === 'tech' || this.state.categ === 'all') {
@@ -35,8 +26,14 @@ export default class BodyPLP extends Component {
     this.setState({
       filteredAttributes: filterArr.map((single) => JSON.parse(single))
     })
-    // console.log(this.state.attributes.map((attribute) => JSON.stringify(attribute)))
     console.log(this.state.filteredAttributes)
+  }
+
+  changeUrl = (e) => {
+    this.props.history.replace({
+      
+    })
+    console.log(e.target.value)
   }
 
   async componentDidMount() {
@@ -89,19 +86,66 @@ export default class BodyPLP extends Component {
           Filters
           <select>
             {filteredAttributes.map((attribute) => 
-              {attribute.map((attrValues, index) => (
-                <optgroup key={index} label={attrValues.id}>
-                  {attrValues.items.map((item) =>
-                    <option value={item.value}  key={item.id}>
-                      {item.value}
-                    </option>
-                  )}
-                </optgroup>
-            ))}
+              (attribute.map((attrValues, index) => (
+                JSON.stringify(attrValues).includes('Yes') || JSON.stringify(attrValues).includes('#') ? (
+                  ''
+                )  
+                :
+                (
+                  <optgroup key={index} label={attrValues.id}>
+                    {attrValues.items.map((item) =>(
+                      <option to onClick={(e) => this.changeUrl(e)} value={item.value}  key={item.id}>
+                        {item.value}
+                      </option>)
+                    )}
+                  </optgroup>
+                )
+            )))
             )}
           </select>
 
-          <button>Click Me</button>
+          {filteredAttributes.map((attribute) => (
+            attribute.map((attrValues) => (
+              JSON.stringify(attrValues).includes('#') && (
+                <label key={attrValues.id}>
+                  {attrValues.id}
+                  <div className="attribute-color-container">
+                  {attrValues.items.map((attribute) => (
+                    <div key={attribute.id}>
+                      <input
+                      name={attribute.id}
+                      value={attribute.value}
+                      type="radio"
+                      />
+                      <div className="attribute-color" style={{ background: attribute.value }}></div>
+                    </div>
+                  ))}
+                  </div>
+                </label>
+              )
+            ))
+          ))}
+
+          {filteredAttributes.map((attribute) => (
+            attribute.map((attrValues) => (
+              JSON.stringify(attrValues).includes('Yes') && (
+                <div key={attrValues.id}>
+                  {attrValues.id}
+                  {attrValues.items.map((attribute, index) => (
+                    <div key={index}>
+                      <input
+                      id={`${index}`}
+                      name={attribute.id}
+                      value={attribute.value}
+                      type="radio"
+                      />
+                      <label htmlFor={`${index}`} >{attribute.value}</label>
+                    </div>
+                  ))}
+                </div>
+              )
+            ))
+          ))}
         </div>
         <h1 className="plp__title">{categ.charAt(0).toUpperCase() + categ.slice(1)}</h1>
         <div className="plp__products">
@@ -124,15 +168,3 @@ BodyPLP.propTypes = {
 
 
 
-
-// item.value.includes('#') ? (
-//   <label key={item.id}>
-//     <input
-//       name={attribute.id}
-//       value={item.value}
-//       type="radio"
-//       onClick={(e) => this.selectedAttribute(e.target.value, index, attribute.id )}
-//     />
-//     <div className="attribute-color" style={{ background: item.value }}></div>
-//   </label>
-// )
