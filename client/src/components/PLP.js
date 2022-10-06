@@ -12,15 +12,31 @@ export default class BodyPLP extends Component {
       products: [],
       categ: '',
       attributes: [],
+      filteredAttributes: [],
       showAttributes: false,
     };
   }
 
   returnFilters = async () => {
-    await this.state.products.map((product) => product.attributes.map((attribute) => {
-      console.log(attribute)
-    }))
-    
+    // await this.state.products.map((product) => product.attributes.map((attribute) => {
+    //   const arr = [...this.state.attributes, attribute]
+    //   const filterArr = arr.map((singleVal) => JSON.stringify(singleVal))
+    //   this.setState({
+    //     atrributes: [...this.state.attributes, filterArr]
+    // })
+    // }))
+
+
+    const stringifyArr = this.state.attributes.map((attribute) => JSON.stringify(attribute))
+    const filterArr = [...new Set(stringifyArr)]
+    if (this.state.categ === 'tech' || this.state.categ === 'all') {
+      filterArr.splice(filterArr.length - 2, 2)
+    }
+    this.setState({
+      filteredAttributes: filterArr.map((single) => JSON.parse(single))
+    })
+    // console.log(this.state.attributes.map((attribute) => JSON.stringify(attribute)))
+    console.log(this.state.filteredAttributes)
   }
 
   async componentDidMount() {
@@ -33,7 +49,6 @@ export default class BodyPLP extends Component {
         attributes: products.map((product) => product.attributes)
       });
       this.returnFilters()
-      // console.log(products.map((product) => product.attributes.map((attribute) => attribute.id)))
     }
 
     if (this.props.match.params.category) {
@@ -49,8 +64,8 @@ export default class BodyPLP extends Component {
  
   }
 
-  async componentDidUpdate() {
-    if (this.props.match.params.category) {
+  async componentDidUpdate(prevProps) {
+    if (this.props.match.params.category !== prevProps.match.params.category) {
       const categ = this.props.match.params.category;
       if (this.state.categ !== categ) {
         const products = await (await getCategory(categ)).category.products.map((product) => product);
@@ -67,44 +82,26 @@ export default class BodyPLP extends Component {
   }
 
   render() {
-    const { categ, products } = this.state;
+    const { categ, filteredAttributes } = this.state;
     return (
       <div className="plp">
         <div className="sidebar-container">
           Filters
-          {products.map((product) => product.attributes.map((attribute, index) => (
-            <div key={index} className="filter-container">
-              <p>{attribute.id}</p>
-              <div className="attribute-values">
-                {attribute.items && attribute.items.map((item) =>
-                  item.value.includes('#') ? (
-                    <label key={item.id}>
-                      <input
-                        name={attribute.id}
-                        value={item.value}
-                        type="radio"
-                        onClick={(e) => this.selectedAttribute(e.target.value, index, attribute.id )}
-                      />
-                      <div className="attribute-color" style={{ background: item.value }}></div>
-                    </label>
-                  ) : (
-                    <label key={item.id} className="default__attributes">
-                      <input
-                        name={attribute.id}
-                        value={item.value}
-                        type="radio"
-                
-                        onClick={(e) => this.selectedAttribute(e.target.value, index, attribute.id)}
-                      />
-                      <div className="attribute">{item.value}</div>
-                    </label>
-                  )
-                )}
-            </div>
-          </div>
-          )))}
+          <select>
+            {filteredAttributes.map((attribute) => 
+              {attribute.map((attrValues, index) => (
+                <optgroup key={index} label={attrValues.id}>
+                  {attrValues.items.map((item) =>
+                    <option value={item.value}  key={item.id}>
+                      {item.value}
+                    </option>
+                  )}
+                </optgroup>
+            ))}
+            )}
+          </select>
 
-          <button onClick={() => console.log(products.map((product) => product.attributes))}>Click Me</button>
+          <button>Click Me</button>
         </div>
         <h1 className="plp__title">{categ.charAt(0).toUpperCase() + categ.slice(1)}</h1>
         <div className="plp__products">
@@ -124,3 +121,18 @@ BodyPLP.propTypes = {
     })
   }),
 }
+
+
+
+
+// item.value.includes('#') ? (
+//   <label key={item.id}>
+//     <input
+//       name={attribute.id}
+//       value={item.value}
+//       type="radio"
+//       onClick={(e) => this.selectedAttribute(e.target.value, index, attribute.id )}
+//     />
+//     <div className="attribute-color" style={{ background: item.value }}></div>
+//   </label>
+// )
