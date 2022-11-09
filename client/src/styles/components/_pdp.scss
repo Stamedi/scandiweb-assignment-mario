@@ -71,7 +71,9 @@
   line-height: 2;
 }
 
-input[type='radio'] {
+.colors__attribute > input[type='radio'],
+.default__attributes > input[type='radio'],
+.pdp__r-sidebar__attribute > label > input[type='radio'] {
   display: none;
 }
 

@@ -56,7 +56,7 @@ export default class BodyPDP extends Component {
   }
 
   render() {
-    const { addToCart, currentCurrency } = this.context;
+    const { addToCart, currentCurrency, addToCartPLP } = this.context;
     const { currentImg, currentProduct, gallery, attributes, prices } = this.state;
 
     return (
@@ -111,7 +111,8 @@ export default class BodyPDP extends Component {
                 )}
               </div>
             </div>
-          ))}
+          )
+          )}
           <div className="pdp__r-sidebar__price">
             <p>PRICE:</p>
             <span>
@@ -122,10 +123,18 @@ export default class BodyPDP extends Component {
           </div>
           
           {currentProduct.inStock === true ? 
-            <button className="pdp__r-sidebar__button" onClick={() =>
-              addToCart(currentProduct, this.state.attributeList.map((attributes) => attributes)
-              .sort((a, b) => a.index - b.index))}>ADD TO CART
-            </button> 
+            (currentProduct.attributes.length == 0) ? (
+              <button className="pdp__r-sidebar__button" onClick={() =>
+                addToCartPLP(currentProduct)}>ADD TO CART
+              </button> 
+            ) :
+            (
+              <button className="pdp__r-sidebar__button" onClick={() =>
+                addToCart(currentProduct, this.state.attributeList.map((attributes) => attributes)
+                .sort((a, b) => a.index - b.index))}>ADD TO CART
+              </button> 
+            )
+
             :
             <button className="pdp__r-sidebar__button">OUT OF STOCK</button>
           }

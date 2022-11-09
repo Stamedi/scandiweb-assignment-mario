@@ -14,7 +14,15 @@ export default class BodyPLP extends Component {
       attributes: [],
       filteredAttributes: [],
       showAttributes: false,
+      urlId: '',
+      urlVal: '',
+      selectedRadio: null,
+      selectedAttr: null,
     };
+
+    this.handleChangeUrl = this.handleChangeUrl.bind(this);
+    this.setDefaultUrl = this.setDefaultUrl.bind(this);
+    this.changeUrlColor = this.changeUrlColor.bind(this);
   }
 
   returnFilters = async () => {
@@ -26,14 +34,55 @@ export default class BodyPLP extends Component {
     this.setState({
       filteredAttributes: filterArr.map((single) => JSON.parse(single))
     })
-    console.log(this.state.filteredAttributes)
+    // console.log(this.state.filteredAttributes)
   }
 
-  changeUrl = (e) => {
-    this.props.history.replace({
-      
+  handleChangeUrl = async (e, id, itemId) => {
+    // console.log(new URL(window.location))
+    const url = new URL(window.location)
+    if (url.searchParams == '') {
+      url.searchParams.set(id ,e.target.value)
+      window.history.pushState(null, null, url)
+      this.setState({
+        urlId: id,
+        urlVal: e.target.value,
+      })
+    } else {
+      url.searchParams.delete(this.state.urlId)
+      url.searchParams.set(id ,e.target.value)
+      window.history.pushState(null, null, url)
+      this.setState({
+        urlId: id,
+        urlVal: e.target.value,
+      })
+    }
+
+    this.setState({
+      selectedAttr: id,
+      selectedRadio: itemId
     })
-    console.log(e.target.value)
+    console.log(id)
+
+    // const val = document.querySelectorAll('.attribute-color');
+    // val.forEach((el) => { el.ariaChecked = false;})
+    // console.log(url.searchParams.get(id))
+    // console.log(url.search)
+    // history.pushState
+    // console.log(id, e.target.value)
+  }
+
+  setDefaultUrl = async () => {
+    const url = new URL(window.location)
+    this.setState({
+      urlId: '',
+      urlVal: '',
+    })
+      window.history.pushState(null, null, url.origin + url.pathname)
+
+  }
+
+  changeUrlColor = (value, id) => {
+    console.log(value, id)
   }
 
   async componentDidMount() {
@@ -58,13 +107,16 @@ export default class BodyPLP extends Component {
       });
       this.returnFilters()
     }
+
+    // const url = new URL(window.location)
+    // url.searchParams.get(id ,e.target.value)
  
   }
 
-  async componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps, prevState) {
     if (this.props.match.params.category !== prevProps.match.params.category) {
       const categ = this.props.match.params.category;
-      if (this.state.categ !== categ) {
+      // if (this.state.categ !== categ) {
         const products = await (await getCategory(categ)).category.products.map((product) => product);
   
         this.setState({
@@ -72,9 +124,37 @@ export default class BodyPLP extends Component {
           categ,
           attributes: products.map((product) => product.attributes)
         });
+
+        const url = new URL(window.location)
+        this.setState({
+          urlId: '',
+          urlVal: '',
+        })
+          window.history.pushState(null, null, url.origin + url.pathname)
+      // }
+      this.returnFilters()
+    }
+
+
+
+    if (this.state.urlId !== prevState.urlId) {
+      const searchParams = new URLSearchParams(window.location.search)
+      const keys = searchParams.keys();
+      const values = searchParams.values();
+      if (searchParams !== '') {
+        for (const key of keys) this.setState({ 
+          urlId: key
+        })
+        for (const value of values) this.setState({ 
+          urlVal: value
+        })
+      } else {
+        this.setState({ 
+          urlId : '',
+          urlVal: ''
+        })
       }
 
-      this.returnFilters()
     }
   }
 
@@ -82,9 +162,10 @@ export default class BodyPLP extends Component {
     const { categ, filteredAttributes } = this.state;
     return (
       <div className="plp">
-        <div className="sidebar-container">
-          Filters
+        <div className="sidebar-container pdp__r-sidebar__attribute__container filters-container">
+          <p>FILTERS:</p>
           <select>
+            <option onClick={() => this.setDefaultUrl()} value='' >All</option>
             {filteredAttributes.map((attribute) => 
               (attribute.map((attrValues, index) => (
                 JSON.stringify(attrValues).includes('Yes') || JSON.stringify(attrValues).includes('#') ? (
@@ -94,7 +175,7 @@ export default class BodyPLP extends Component {
                 (
                   <optgroup key={index} label={attrValues.id}>
                     {attrValues.items.map((item) =>(
-                      <option to onClick={(e) => this.changeUrl(e)} value={item.value}  key={item.id}>
+                      <option onClick={(e) => this.handleChangeUrl(e, attrValues.id)} value={item.value}  key={item.id}>
                         {item.value}
                       </option>)
                     )}
@@ -104,52 +185,58 @@ export default class BodyPLP extends Component {
             )}
           </select>
 
-          {filteredAttributes.map((attribute) => (
-            attribute.map((attrValues) => (
-              JSON.stringify(attrValues).includes('#') && (
-                <label key={attrValues.id}>
-                  {attrValues.id}
-                  <div className="attribute-color-container">
-                  {attrValues.items.map((attribute) => (
-                    <div key={attribute.id}>
-                      <input
-                      name={attribute.id}
-                      value={attribute.value}
-                      type="radio"
-                      />
-                      <div className="attribute-color" style={{ background: attribute.value }}></div>
-                    </div>
-                  ))}
-                  </div>
-                </label>
-              )
-            ))
-          ))}
 
-          {filteredAttributes.map((attribute) => (
-            attribute.map((attrValues) => (
-              JSON.stringify(attrValues).includes('Yes') && (
-                <div key={attrValues.id}>
-                  {attrValues.id}
-                  {attrValues.items.map((attribute, index) => (
-                    <div key={index}>
-                      <input
-                      id={`${index}`}
+          {filteredAttributes.map((attributes) => (
+            attributes.map((attribute) => (
+              JSON.stringify(attribute).includes('#') ?
+            (<div key={attribute.id} className="pdp__r-sidebar__attribute__container">
+            <p>{attribute.id.toUpperCase()}:</p>
+            <div className="pdp__r-sidebar__attribute">
+              {
+                attribute.items.map((item) =>
+                  <label key={item.id} className="colors__attribute">
+                    <input
                       name={attribute.id}
-                      value={attribute.value}
+                      value={item.value}
                       type="radio"
-                      />
-                      <label htmlFor={`${index}`} >{attribute.value}</label>
+                      onChange={(e) => this.handleChangeUrl(e, attribute.id, item.id )}
+                      checked={this.state.selectedRadio === item.id && this.state.selectedAttr === attribute.id}
+                    />
+                    <div className="attribute-color" style={{ background: item.value }}></div>
+                  </label>
+              )}
+              </div>
+              </div>)
+              : JSON.stringify(attribute).includes('Yes') ? (
+                <div key={attribute.id} className="pdp__r-sidebar__attribute__container">
+                  <p>{attribute.id.toUpperCase()}:</p>
+                  <div className="pdp__r-sidebar__attribute-checkbox">
+                    {
+                      attribute.items.map((item) =>
+                        <label key={item.id} className="default__attributes-checkbox">
+                        <input
+                          type="radio"
+                          name={attribute.id}
+                          value={item.value}
+                          onChange={(e) => this.handleChangeUrl(e, attribute.id, item.id )}
+                          checked={this.state.selectedRadio === item.id && this.state.selectedAttr === attribute.id}
+                        />
+                        <div className="attribute-checkbox-label">{item.value}</div>
+                        </label>
+                    )}
                     </div>
-                  ))}
-                </div>
-              )
+                  </div>
+              ) : ''
             ))
-          ))}
+          )
+          )}
+
+  
+          
         </div>
         <h1 className="plp__title">{categ.charAt(0).toUpperCase() + categ.slice(1)}</h1>
         <div className="plp__products">
-          <Product products={this.state.products} />
+          <Product products={this.state.products} urlId={this.state.urlId} urlVal={this.state.urlVal}  />
         </div>
       </div>
     );
@@ -161,10 +248,55 @@ BodyPLP.contextType = DataContext;
 BodyPLP.propTypes = {
   match: propTypes.shape({
     params: propTypes.shape({
-      category: propTypes.string
+      category: propTypes.string,
+      urlId: propTypes.string
     })
   }),
 }
 
 
 
+
+
+// {filteredAttributes.map((attribute) => (
+//   attribute.map((attrValues) => (
+//     JSON.stringify(attrValues).includes('#') && (
+//       <label key={attrValues.id}>
+//         {attrValues.id}
+//         <div className="attribute-colors">
+//         {attrValues.items.map((attribute) => (
+//           <div key={attribute.id} onClick={() => this.changeUrlColor(attribute.value, attribute.id )}>
+//             <input
+//             name={attribute.id}
+//             value={attribute.value}
+//             type="radio"
+//             />
+//             <div className="attribute-color" style={{ background: attribute.value }}></div>
+//           </div>
+//         ))}
+//         </div>
+//       </label>
+//     )
+//   ))
+// ))}
+
+// {filteredAttributes.map((attribute) => (
+//   attribute.map((attrValues) => (
+//     JSON.stringify(attrValues).includes('Yes') && (
+//       <div key={attrValues.id}>
+//         {attrValues.id}
+//         {attrValues.items.map((attribute, index) => (
+//           <div key={index}>
+//             <input
+//             id={`${index}`}
+//             name={attribute.id}
+//             value={attribute.value}
+//             type="radio"
+//             />
+//             <label htmlFor={`${index}`} >{attribute.value}</label>
+//           </div>
+//         ))}
+//       </div>
+//     )
+//   ))
+// ))}

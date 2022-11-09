@@ -20,23 +20,29 @@ export default class ProductCart extends Component {
   }
 
   incrGallery(currentItem) {
-
-    currentItem.galleryIndex = ++currentItem.galleryIndex
-    const index = this.state.items
-    .findIndex((item) => item.genItemId === currentItem.genItemId)
-     this.state.items.splice(index, 1, currentItem)
-
+    if ((currentItem.gallery.length - 1) > currentItem.galleryIndex) {
+      currentItem.galleryIndex = ++currentItem.galleryIndex
+      const index = this.state.items
+      .findIndex((item) => item.genItemId === currentItem.genItemId)
+      this.state.items.splice(index, 1, currentItem)
       this.setState({
         items: this.state.items
       })
       localStorage.setItem('products',JSON.stringify(this.state.items))
+    }
   }
 
-  decrGallery() {
-    if (this.state.currentGallery !== 0) {
-      this.setState((prevState) => ({
-        currentGallery: prevState.currentGallery - 1,
-      }));
+  decrGallery(currentItem) {
+    if (currentItem.galleryIndex !== 0) {
+      currentItem.galleryIndex = --currentItem.galleryIndex
+      const index = this.state.items
+      .findIndex((item) => item.genItemId === currentItem.genItemId)
+      this.state.items.splice(index, 1, currentItem)
+      console.log(currentItem.galleryIndex)
+      this.setState({
+        items: this.state.items
+      })
+      localStorage.setItem('products',JSON.stringify(this.state.items))
     }
   }
 
@@ -141,7 +147,7 @@ export default class ProductCart extends Component {
                 ) : (
                   <></>
                 )}
-                <img src={item.gallery[0]} alt="" />
+                <img src={item.gallery[item.galleryIndex]} alt="" />
               </div>
               </div>
             </div>

@@ -73,20 +73,33 @@ export default class App extends Component {
   }
 
   async addToCart({ id, name, inStock, gallery, category, attributes, prices, brand }, attributeList) {
-    const galleryIndex = this.state.galleryIndex;
+    const galleryIndex = 0;
     const genItemId = uuidv4();
-    if (JSON.parse(localStorage.getItem('products')) === null) {
-      const amount = this.state.amount;
-      await this.setState((prevState) => ({
-        productsLocalStorage: [
-          ...prevState.productsLocalStorage,
-          { id, name, inStock, gallery, category,
-            attributes, prices, brand, attributeList, amount, galleryIndex, genItemId },
-        ],
-      }));
-      localStorage.setItem('products', JSON.stringify(this.state.productsLocalStorage));
-    } 
-    else if (JSON.parse(localStorage.getItem('products')) !== null) {
+    // if (JSON.parse(localStorage.getItem('products')).length === null) {
+    //     const amount = this.state.amount;
+    //     await this.setState((prevState) => ({
+    //       productsLocalStorage: [
+    //         ...prevState.productsLocalStorage,
+    //         { id, name, inStock, gallery, category,
+    //           attributes, prices, brand, attributeList, amount, galleryIndex, genItemId },
+    //       ],
+    //     }));
+    //     localStorage.setItem('products', JSON.stringify(this.state.productsLocalStorage));
+    //   //  else if (attributes.length === 0 ) {
+    //   //   const amount = this.state.amount;
+    //   //   await this.setState((prevState) => ({
+    //   //     productsLocalStorage: [
+    //   //       ...prevState.productsLocalStorage,
+    //   //       { id, name, inStock, gallery, category, prices, brand, amount, galleryIndex, genItemId },
+    //   //     ],
+    //   //   }));
+    //   //   localStorage.setItem('products', JSON.stringify(this.state.productsLocalStorage));
+    //   // }
+    //   // console.log(            { id, name, inStock, gallery, category,
+    //   //   attributes, prices, brand, attributeList, galleryIndex, genItemId })
+    // } 
+    // else
+     if (JSON.parse(localStorage.getItem('products')) !== null) {
       const items = JSON.parse(localStorage.getItem('products'));
       const amount = this.state.amount;
       const attrList = items.map((item) => item.attributeList.map((attribute) => attribute.e));
@@ -102,8 +115,9 @@ export default class App extends Component {
         }));
         localStorage.setItem('products', JSON.stringify(this.state.productsLocalStorage));
       }
+      // console.log(            { id, name, inStock, gallery, category,
+      //   attributes, prices, brand, attributeList, galleryIndex, genItemId })
     }
-
     const amounts = this.state.productsLocalStorage.map((item) => item.amount);
     let prodAmount = 0;
     for (let i = 0; i < amounts.length; i++) {
@@ -115,7 +129,7 @@ export default class App extends Component {
   }
 
   async addToCartPLP({ id, name, inStock, gallery, category, attributes, prices, brand }) {
-    const galleryIndex = this.state.galleryIndex;
+    const galleryIndex = 0;
     const genItemId = uuidv4();
     if (JSON.parse(localStorage.getItem('products')) === null) {
       const attributeList = attributes.map((attr, index) => ({ e: attr.items[0].value, index: index, id:attr.id }));
